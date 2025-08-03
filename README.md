@@ -17,4 +17,10 @@ After enabling the plugin, a new tab named "Object Placer" should appear in the 
 The place where you want to place the object must have collision, this is mandatory.
 Tested only on Godot 4.4.1.stable on Arch Linux.
 
+
+# TO-DO:
+* Better interface and object catalog;
+* Multiple object placement on a range;
+* Erase tool.
+
 ## feel free to contribute to the project
