@@ -67,7 +67,7 @@ layout_mode = 2
 
 [node name="EnableLabel" type="Label" parent="VBoxContainer/HBoxContainer3"]
 layout_mode = 2
-text = "Enabled and Reload:"
+text = "Enable and Reload:"
 
 [node name="EnableButton" type="CheckButton" parent="VBoxContainer/HBoxContainer3"]
 layout_mode = 2
