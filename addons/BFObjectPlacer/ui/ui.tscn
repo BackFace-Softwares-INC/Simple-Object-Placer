@@ -1,46 +1,45 @@
-[gd_scene load_steps=3 format=3 uid="uid://cwgfh486a5vl1"]
+[gd_scene load_steps=2 format=3 uid="uid://cwgfh486a5vl1"]
 
 [ext_resource type="Script" uid="uid://5hk4s1b7v2pd" path="res://addons/BFObjectPlacer/ui/scirpts/ui.gd" id="1_3dh7e"]
-[ext_resource type="Script" uid="uid://cvoo7d1j84dq5" path="res://addons/BFObjectPlacer/BFOPResourcePicker.gd" id="1_n0kay"]
 
-[node name="VBoxContainer" type="VBoxContainer"]
+[node name="UI" type="HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+anchors_preset = -1
+anchor_right = 0.364583
+anchor_bottom = 0.253086
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3dh7e")
+metadata/_edit_use_anchors_ = true
+
+[node name="Tree" type="Tree" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+column_titles_visible = true
+allow_reselect = true
+hide_root = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 clip_contents = true
 custom_minimum_size = Vector2(5, 0)
-offset_right = 137.0
-offset_bottom = 66.0
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 alignment = 1
-script = ExtResource("1_3dh7e")
 
-[node name="TitleLabel" type="Label" parent="."]
-layout_mode = 2
-text = "Object Placer"
-
-[node name="HSeparator" type="HSeparator" parent="."]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
-[node name="BFOPResourcePicker" type="EditorResourcePicker" parent="HBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(100, 2.46)
-layout_mode = 2
-base_type = "PackedScene"
-script = ExtResource("1_n0kay")
-metadata/_custom_type_script = "uid://cvoo7d1j84dq5"
-
-[node name="HSeparator2" type="HSeparator" parent="."]
-layout_mode = 2
-
-[node name="OffsetLabel" type="Label" parent="."]
+[node name="OffsetLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 text = "Offset:"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
-[node name="X" type="SpinBox" parent="HBoxContainer2"]
+[node name="X" type="SpinBox" parent="VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
 step = 0.01
@@ -48,26 +47,29 @@ allow_greater = true
 allow_lesser = true
 prefix = "x"
 
-[node name="Y" type="SpinBox" parent="HBoxContainer2"]
+[node name="Y" type="SpinBox" parent="VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
 step = 0.01
 prefix = "y"
 
-[node name="Z" type="SpinBox" parent="HBoxContainer2"]
+[node name="Z" type="SpinBox" parent="VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
 step = 0.01
 prefix = "z"
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="."]
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
 layout_mode = 2
 
-[node name="EnableLabel" type="Label" parent="HBoxContainer3"]
-layout_mode = 2
-text = "Enabled:"
-
-[node name="EnableButton" type="CheckButton" parent="HBoxContainer3"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
-[connection signal="toggled" from="HBoxContainer3/EnableButton" to="." method="_on_enable_button_toggled"]
+[node name="EnableLabel" type="Label" parent="VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "Enabled and Reload:"
+
+[node name="EnableButton" type="CheckButton" parent="VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+
+[connection signal="toggled" from="VBoxContainer/HBoxContainer3/EnableButton" to="." method="_on_enable_button_toggled"]
