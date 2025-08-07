@@ -27,7 +27,7 @@ Tested only on Godot 4.4.1.stable on Arch Linux.
 # Documentation
 * BFOP.gd is the main plugin code.
 * plugin.cfg is the configuration file.
-* ui/scripts/ui.gd is the main code, all the features and interface logic is on this file
+* ui/scripts/ui.gd is the main code, all the features and interface logic is on this file.
 * plugin versuin logic > v: x.x.x.x -> x.x.x.Y = alpha version -> x.x.Y.x = beta version -> x.Y.x.x = release candidate version -> Y.x.x.x = release version.
 
-## feel free to contribute to the project
+feel free to contribute to the project ❤
