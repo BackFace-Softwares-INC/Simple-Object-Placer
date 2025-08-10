@@ -21,7 +21,6 @@ Tested only on Godot 4.4.1.stable on Arch Linux.
 
 
 # TO-DO:
-* Multiple object placement on a range;
 * Erase tool.
 
 # Documentation
