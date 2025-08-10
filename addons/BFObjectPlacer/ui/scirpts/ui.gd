@@ -5,6 +5,8 @@ extends HBoxContainer
 @onready var OffsetX : SpinBox = %X
 @onready var OffsetY : SpinBox = %Y
 @onready var OffsetZ : SpinBox = %Z
+@onready var placementdensity : SpinBox = %Density
+@onready var placementrange : SpinBox = %Range
 @onready var tree : Tree = %Tree
 
 var object_path
@@ -34,23 +36,20 @@ func add_items_to_tree(path: String, parent: TreeItem) -> void:
 		var full_path := path.path_join(file_name)
 		var is_folder := dir.current_is_dir()
 
-		var item := tree.create_item(parent)
-		item.set_text(0, file_name)
-		item.set_metadata(0, full_path)
-
-		var icon: Texture2D
 		if is_folder:
-			icon = EditorInterface.get_editor_theme().get_icon("Folder", "EditorIcons")
+			add_items_to_tree(full_path, parent)
 		else:
-			icon = EditorInterface.get_editor_theme().get_icon("File", "EditorIcons")
-
-		item.set_icon(0, icon)
-
-		if is_folder:
-			add_items_to_tree(full_path, item)
+			if file_name.ends_with(".tscn"):
+				var item := tree.create_item(parent)
+				item.set_text(0, file_name)
+				item.set_metadata(0, full_path)
+				item.set_icon(0, EditorInterface.get_editor_theme().get_icon("PackedScene", "EditorIcons"))
 
 		file_name = dir.get_next()
 	dir.list_dir_end()
+
+
+
 
 func _on_enable_button_toggled(toggled_on: bool) -> void:
 	enabled = toggled_on
@@ -72,6 +71,7 @@ func _on_enable_button_toggled(toggled_on: bool) -> void:
 func _process(delta: float) -> void:
 	if enabled and collision():
 		GIZMO.position = collision().get("position")
+		GIZMO.scale = Vector3(placementrange.value, placementrange.value, placementrange.value)
 
 func collision() -> Dictionary:
 	var camera : Camera3D = EditorInterface.get_editor_viewport_3d().get_camera_3d()
@@ -86,27 +86,53 @@ func collision() -> Dictionary:
 	return collision
 
 func _input(event):
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed and not event.is_echo() and enabled and object_path != null:
-			
-			if collision():
-				var obj = load(object_path).instantiate()
-				obj.position = collision().get("position") + Vector3(OffsetX.value, OffsetY.value, OffsetZ.value)
-					
-				var edited_scene = EditorInterface.get_edited_scene_root()
-				if not edited_scene:
-					return
+	if not enabled:
+		return
 
-				var undo_redo = EditorInterface.get_editor_undo_redo()
-				undo_redo.create_action("Place Object")
+	if event is InputEventMouseButton and event.pressed:
+		var vp_rect = EditorInterface.get_editor_viewport_3d().get_visible_rect()
+		var mouse_pos = event.position
+
+		if not vp_rect.has_point(mouse_pos):
+			return
+
+	if event is InputEventMouseButton \
+	and event.button_index == MOUSE_BUTTON_LEFT \
+	and event.pressed and not event.is_echo() \
+	and object_path != null:
+
+		if collision():
+			var center_pos = collision().get("position")
+			var edited_scene = EditorInterface.get_edited_scene_root()
+			if not edited_scene:
+				return
+
+			var undo_redo = EditorInterface.get_editor_undo_redo()
+			undo_redo.create_action("Place Objects")
+
+			for i in range(placementdensity.value):
+				var obj = load(object_path).instantiate()
+				var random_offset = Vector3(
+					randf_range(-placementrange.value, placementrange.value),
+					0,
+					randf_range(-placementrange.value, placementrange.value)
+				)
+				if random_offset.length() > placementrange.value:
+					random_offset = random_offset.normalized() * randf_range(0, placementrange.value)
+
+				obj.position = center_pos + random_offset + Vector3(OffsetX.value, OffsetY.value, OffsetZ.value)
 				undo_redo.add_do_method(edited_scene, "add_child", obj)
 				undo_redo.add_do_method(obj, "set_owner", edited_scene)
 				undo_redo.add_undo_method(edited_scene, "remove_child", obj)
-				undo_redo.commit_action()
+
+			undo_redo.commit_action()
+
+
+
+
 
 func _on_item_selected() -> void:
 	var selected = tree.get_selected()
 	if selected:
-		print("A")
 		var path = selected.get_metadata(0)
 		object_path = path
