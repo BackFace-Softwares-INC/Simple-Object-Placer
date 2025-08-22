@@ -8,7 +8,14 @@ extends HBoxContainer
 @onready var OffsetZ : SpinBox = %Z # Z Axis position for the offset.
 @onready var placementdensity : SpinBox = %Density # Density of objects.
 @onready var placementrange : SpinBox = %Range # Range distance of the objects.
+@onready var scaleRangeMin : SpinBox = %RandomScaleRangeMin
+@onready var scaleRangeMax : SpinBox = %RandomScaleRangeMax
+@onready var randomScaleEnabler : CheckBox = %RandomScaleEnabler
+@onready var randomRotationEnabler : CheckBox = %RandomRotationEnabler
 @onready var tree : Tree = %Tree # Tree node path.
+
+var can_rotate : bool = false
+var can_scale : bool = false
 
 # Scene path on the filesystem.
 var object_path # The path of the object that will be placed.
@@ -117,7 +124,6 @@ func _input(event):
 			var edited_scene = EditorInterface.get_edited_scene_root()
 			if not edited_scene:
 				return
-
 			# Undo redo
 
 			var undo_redo = EditorInterface.get_editor_undo_redo()
@@ -130,8 +136,15 @@ func _input(event):
 					0,
 					randf_range(0, placementrange.value)
 				)
+				var random_scale : float = randf_range(scaleRangeMin.value, scaleRangeMax.value)
 
-				obj.position = center_pos + random_offset + Vector3(OffsetX.value, OffsetY.value, OffsetZ.value)
+				if can_rotate:
+					obj.rotation.y = randf()
+				if can_scale:
+					obj.position = center_pos + random_offset + (Vector3(OffsetX.value, OffsetY.value, OffsetZ.value) * random_scale)
+					obj.scale = Vector3(random_scale, random_scale, random_scale)
+				else:
+					obj.position = center_pos + random_offset + Vector3(OffsetX.value, OffsetY.value, OffsetZ.value)
 				undo_redo.add_do_method(edited_scene, "add_child", obj)
 				undo_redo.add_do_method(obj, "set_owner", edited_scene)
 				undo_redo.add_undo_method(edited_scene, "remove_child", obj)
@@ -147,3 +160,11 @@ func _on_item_selected() -> void:
 	if selected:
 		var path = selected.get_metadata(0)
 		object_path = path
+
+func _on_random_rotation_enabler_toggled(toggled_on: bool) -> void:
+	can_rotate = toggled_on
+
+func _on_random_scale_enabler_toggled(toggled_on: bool) -> void:
+	can_scale = toggled_on
+	scaleRangeMax.editable = toggled_on
+	scaleRangeMin.editable = toggled_on
