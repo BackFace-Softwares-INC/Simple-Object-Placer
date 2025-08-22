@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://bwoirk680he0d"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rnc2j"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0, 1, 1, 0.0784314)
+refraction_scale = 1.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_dvubd"]
+material = SubResource("StandardMaterial3D_rnc2j")
+radius = 2.5
+height = 5.0
+
+[node name="Gizmo" type="MeshInstance3D"]
+mesh = SubResource("SphereMesh_dvubd")

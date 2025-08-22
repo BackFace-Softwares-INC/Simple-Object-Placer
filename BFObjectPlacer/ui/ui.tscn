@@ -1,0 +1,149 @@
+[gd_scene load_steps=2 format=3 uid="uid://cwgfh486a5vl1"]
+
+[ext_resource type="Script" uid="uid://5hk4s1b7v2pd" path="res://addons/BFObjectPlacer/ui/scirpts/ui.gd" id="1_3dh7e"]
+
+[node name="UI" type="HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+anchors_preset = -1
+anchor_right = 0.364583
+anchor_bottom = 0.253086
+offset_right = 242.0004
+offset_bottom = 0.0002746582
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3dh7e")
+metadata/_edit_use_anchors_ = true
+
+[node name="Tree" type="Tree" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(185, 0)
+layout_mode = 2
+column_titles_visible = true
+allow_reselect = true
+hide_root = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+clip_contents = true
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+alignment = 1
+
+[node name="OffsetLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Offset:"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="X" type="SpinBox" parent="VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+step = 0.01
+allow_greater = true
+allow_lesser = true
+prefix = "x"
+
+[node name="Y" type="SpinBox" parent="VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+step = 0.01
+prefix = "y"
+
+[node name="Z" type="SpinBox" parent="VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+step = 0.01
+prefix = "z"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="BrushLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Brush:"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="RangeLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Range:"
+
+[node name="Range" type="SpinBox" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+step = 0.1
+value = 1.0
+
+[node name="DensityLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Density:"
+
+[node name="Density" type="SpinBox" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+value = 1.0
+
+[node name="HSeparator3" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="EnableLabel" type="Label" parent="VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "Enable and Reload:"
+
+[node name="EnableButton" type="CheckButton" parent="VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="."]
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="RandomRotationEnabler" type="CheckBox" parent="VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Random rotation"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="RandomScaleEnabler" type="CheckBox" parent="VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Random scale"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="RandomRangeLabel" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+text = "Random scale range:"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="RandomScaleRangeMin" type="SpinBox" parent="VBoxContainer2/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+step = 0.10000000000582077
+value = 1.0000000000582077
+editable = false
+prefix = "Min"
+
+[node name="RandomScaleRangeMax" type="SpinBox" parent="VBoxContainer2/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+step = 0.10000000000582077
+value = 1.0000000000582077
+editable = false
+prefix = "Max"
+
+[connection signal="toggled" from="VBoxContainer/HBoxContainer3/EnableButton" to="." method="_on_enable_button_toggled"]
+[connection signal="toggled" from="VBoxContainer2/RandomRotationEnabler" to="." method="_on_random_rotation_enabler_toggled"]
+[connection signal="toggled" from="VBoxContainer2/RandomScaleEnabler" to="." method="_on_random_scale_enabler_toggled"]
