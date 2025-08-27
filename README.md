@@ -19,7 +19,7 @@ After enabling the plugin, a new tab named "Object Placer" should appear in the 
 # Warnings:
 
 The place where you want to place the object must have collision, this is mandatory.
-Tested only on Godot 4.4.1.stable on Arch Linux.
+Tested only on Godot version >= 4.x.
 
 
 # TO-DO:
