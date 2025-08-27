@@ -1,6 +1,9 @@
 # <img width="116" height="116" alt="icon" src="https://github.com/user-attachments/assets/a8a64a6b-405c-43d7-b232-2c63de5e2c26" /> Back-Face-Object-Placer
 
+## Addon Notice:
+This addon was developed for internal use and for specific needs, it may lack functions for your needs. 
 
+##
 A simple Godot addon to place 3D objects/nodes on a 3D scene at mouse position using raycast.
 
 <img src="SS2.png">
