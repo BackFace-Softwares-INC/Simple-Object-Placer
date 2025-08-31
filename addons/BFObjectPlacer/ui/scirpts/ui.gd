@@ -60,8 +60,6 @@ func add_items_to_tree(path: String, parent: TreeItem) -> void:
 		file_name = dir.get_next() # Go to next file.
 	dir.list_dir_end() # Stop reading
 
-
-
 # Update the tree node and enable the placement.
 func _on_enable_button_toggled(toggled_on: bool) -> void:
 	enabled = toggled_on # Enable the placement.
@@ -111,14 +109,12 @@ func _input(event):
 			return
 
 	# Make sure that the input is from the left mouse position.
-
 	if event is InputEventMouseButton \
 	and event.button_index == MOUSE_BUTTON_LEFT \
 	and event.pressed and not event.is_echo() \
 	and object_path != null:
 
 # If the mouse position is on a object, make the placement logic.
-
 		if collision():
 			var center_pos = collision().get("position")
 			var edited_scene = EditorInterface.get_edited_scene_root()
