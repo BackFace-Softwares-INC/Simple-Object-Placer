@@ -22,7 +22,7 @@ var object_path # The path of the object that will be placed.
 
 # 3D gizmo scene path.
 var GIZMO : MeshInstance3D = null # Variable to store the 3D scene of the gizmo
-var gizmo_scene := preload("res://addons/BFObjectPlacer/gizmo/gizmo.tscn") # 3D scene path.
+var gizmo_scene : PackedScene = preload("res://addons/BFObjectPlacer/gizmo/gizmo.tscn") # 3D scene path.
 
 # Define tree nodes attributes, like hide root, names and others.
 func _ready() -> void:
@@ -33,26 +33,26 @@ func _ready() -> void:
 
 # Look for every file on the filesystem and put the .tscn scenes on tree.
 func add_items_to_tree(path: String, parent: TreeItem) -> void:
-	var dir := DirAccess.open(path) # Variable to store ever path in the filesystem
+	var dir : DirAccess = DirAccess.open(path) # Variable to store ever path in the filesystem
 	if dir == null: # Return if there's no path or if they can't open.
 		print("Can't open: ", path)
 		return
 
 	dir.list_dir_begin() # Start to open files.
-	var file_name := dir.get_next() # Get the file name.
+	var file_name : String = dir.get_next() # Get the file name.
 	while file_name != "": # Ignore the path's with no name or if they being with "."
 		if file_name.begins_with("."):
 			file_name = dir.get_next()
 			continue
 
-		var full_path := path.path_join(file_name) # Get the full path.
-		var is_folder := dir.current_is_dir() # Verify if is a folder
+		var full_path : String = path.path_join(file_name) # Get the full path.
+		var is_folder : bool = dir.current_is_dir() # Verify if is a folder
 
 		if is_folder: # If is folder, read every file.
 			add_items_to_tree(full_path, parent)
 		else:
 			if file_name.ends_with(".tscn"): # Add the .tscn file to tree
-				var item := tree.create_item(parent)
+				var item : TreeItem = tree.create_item(parent)
 				item.set_text(0, file_name)
 				item.set_metadata(0, full_path)
 				item.set_icon(0, EditorInterface.get_editor_theme().get_icon("PackedScene", "EditorIcons"))
@@ -69,7 +69,7 @@ func _on_enable_button_toggled(toggled_on: bool) -> void:
 	if enabled:
 		tree.clear() # Clear the tree wen enable is true
 
-		var root := tree.create_item() # Root folder.
+		var root : TreeItem = tree.create_item() # Root folder.
 		add_items_to_tree("res://", root)
 		if not GIZMO: # Gizmo stantiate and logic.
 			GIZMO = gizmo_scene.instantiate()
@@ -150,9 +150,6 @@ func _input(event):
 				undo_redo.add_undo_method(edited_scene, "remove_child", obj)
 
 			undo_redo.commit_action()
-
-
-
 
 # Update the obect_path with the item selected.
 func _on_item_selected() -> void:
