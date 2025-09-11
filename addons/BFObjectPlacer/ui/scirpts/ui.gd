@@ -14,6 +14,8 @@ extends HBoxContainer
 @onready var randomRotationEnabler : CheckBox = %RandomRotationEnabler
 @onready var tree : Tree = %Tree # Tree node path.
 
+@onready var pre_view: Node3D = $PreViewAndConfig/PreViewContainer/PreView/PreView
+
 var can_rotate : bool = false
 var can_scale : bool = false
 
@@ -21,7 +23,7 @@ var can_scale : bool = false
 var object_path # The path of the object that will be placed.
 
 # 3D gizmo scene path.
-var GIZMO : MeshInstance3D = null # Variable to store the 3D scene of the gizmo
+var GIZMO : Node3D = null # Variable to store the 3D scene of the gizmo
 var gizmo_scene : PackedScene = preload("res://addons/BFObjectPlacer/gizmo/gizmo.tscn") # 3D scene path.
 
 # Define tree nodes attributes, like hide root, names and others.
@@ -79,9 +81,8 @@ func _on_enable_button_toggled(toggled_on: bool) -> void:
 
 # Put the gizmo on the mouse position
 func _process(delta: float) -> void:
-	if enabled and collision(): # If the placement is enabled and the mouse is on a collision object, put the gizmo on mouse pos.
-		GIZMO.position = collision().get("position")
-		GIZMO.scale = Vector3(placementrange.value, placementrange.value, placementrange.value)
+	if enabled and GIZMO and collision(): # If the placement is enabled and the mouse is on a collision object, put the gizmo on mouse pos.
+		GIZMO.position = collision().get("position") + Vector3(OffsetX.value, OffsetY.value, OffsetZ.value)
 
 # Get the ssmp (Screen Space Mouse Position).
 func collision() -> Dictionary:
@@ -91,8 +92,15 @@ func collision() -> Dictionary:
 	var ray_origin : Vector3 = camera.project_ray_origin(mouse_pos) # Origin of ray.
 	var ray_end : Vector3 = ray_origin + camera.project_ray_normal(mouse_pos) * range # End point of ray.
 	var query : PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)  # Make the raycast.
-	var collision : Dictionary = camera.get_world_3d().direct_space_state.intersect_ray(query) # Get the info of the object that collided with the ray.
-	if collision: # Return the dictionary
+	if GIZMO:
+		var exclude_rids : Array = []
+		for child in GIZMO.get_children():
+			if child is CollisionObject3D:
+				exclude_rids.append(child.get_rid())
+		query.exclude = exclude_rids
+
+	var collision : Dictionary = camera.get_world_3d().direct_space_state.intersect_ray(query)
+	if collision:
 		return collision
 	return collision
 
@@ -153,6 +161,40 @@ func _on_item_selected() -> void:
 	if selected:
 		var path = selected.get_metadata(0)
 		object_path = path
+
+		if GIZMO:
+			GIZMO.queue_free()
+			GIZMO = null
+
+		if object_path and ResourceLoader.exists(object_path):
+			var new_scene = load(object_path)
+			if new_scene is PackedScene:
+
+				for i in pre_view.get_node("Holder").get_children():
+					i.queue_free()
+
+				pre_view.get_node("Holder").add_child(new_scene.instantiate())
+
+				GIZMO = new_scene.instantiate()
+
+				_disable_collision(GIZMO)
+
+				var edited_scene = EditorInterface.get_edited_scene_root()
+				if edited_scene:
+					edited_scene.add_child(GIZMO)
+					GIZMO.owner = null
+
+func _disable_collision(node: Node) -> void:
+	if node is CollisionObject3D:
+		node.collision_layer = 0
+		node.collision_mask = 0
+
+	# CSGs
+	if node is CSGShape3D:
+		node.use_collision = false #FIXME -> this is not working for csg.
+
+	for child in node.get_children():
+		_disable_collision(child)
 
 func _on_random_rotation_enabler_toggled(toggled_on: bool) -> void:
 	can_rotate = toggled_on
