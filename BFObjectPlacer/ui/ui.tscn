@@ -1,0 +1,215 @@
+[gd_scene load_steps=5 format=3 uid="uid://cwgfh486a5vl1"]
+
+[ext_resource type="Script" uid="uid://5hk4s1b7v2pd" path="res://addons/BFObjectPlacer/ui/scirpts/ui.gd" id="1_3dh7e"]
+[ext_resource type="PackedScene" uid="uid://eybrib8f5a1d" path="res://addons/BFObjectPlacer/previewScene/PreView.tscn" id="2_3dh7e"]
+
+[sub_resource type="Environment" id="Environment_3dh7e"]
+ambient_light_source = 2
+ambient_light_color = Color(0.454524, 0.454524, 0.454524, 1)
+
+[sub_resource type="World3D" id="World3D_n0kay"]
+environment = SubResource("Environment_3dh7e")
+
+[node name="UI" type="HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+anchors_preset = -1
+anchor_right = 0.364583
+anchor_bottom = 0.253086
+offset_top = 1.0
+offset_right = 557.0
+offset_bottom = 8.00027
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3dh7e")
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+clip_contents = true
+custom_minimum_size = Vector2(303, 100)
+layout_mode = 2
+alignment = 1
+
+[node name="Tree" type="Tree" parent="VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 136.67)
+layout_mode = 2
+column_titles_visible = true
+allow_reselect = true
+hide_root = true
+
+[node name="EnableButton" type="CheckButton" parent="VBoxContainer"]
+layout_mode = 2
+text = "Enable and reload:"
+
+[node name="PreViewAndConfig" type="Panel" parent="."]
+custom_minimum_size = Vector2(661.53, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PreViewContainer" type="SubViewportContainer" parent="PreViewAndConfig"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 2.0
+offset_top = -80.0
+offset_right = 163.0
+offset_bottom = 80.0
+grow_vertical = 2
+stretch = true
+
+[node name="PreView" type="SubViewport" parent="PreViewAndConfig/PreViewContainer"]
+own_world_3d = true
+world_3d = SubResource("World3D_n0kay")
+handle_input_locally = false
+size = Vector2i(161, 160)
+render_target_update_mode = 4
+
+[node name="PreView" parent="PreViewAndConfig/PreViewContainer/PreView" instance=ExtResource("2_3dh7e")]
+
+[node name="OffsetLabel" type="Label" parent="PreViewAndConfig"]
+layout_mode = 2
+offset_left = 164.5
+offset_top = 2.0
+offset_right = 464.5
+offset_bottom = 25.0
+text = "Offset:"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PreViewAndConfig"]
+layout_mode = 2
+offset_left = 164.5
+offset_top = 29.0
+offset_right = 464.5
+offset_bottom = 60.0
+
+[node name="X" type="SpinBox" parent="PreViewAndConfig/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+step = 0.01
+allow_greater = true
+allow_lesser = true
+prefix = "x"
+
+[node name="Y" type="SpinBox" parent="PreViewAndConfig/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+step = 0.01
+prefix = "y"
+
+[node name="Z" type="SpinBox" parent="PreViewAndConfig/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+step = 0.01
+prefix = "z"
+
+[node name="HSeparator2" type="HSeparator" parent="PreViewAndConfig"]
+layout_mode = 2
+offset_left = 164.5
+offset_top = 64.0
+offset_right = 464.5
+offset_bottom = 68.0
+
+[node name="BrushLabel" type="Label" parent="PreViewAndConfig"]
+layout_mode = 2
+offset_left = 164.5
+offset_top = 72.0
+offset_right = 464.5
+offset_bottom = 95.0
+text = "Brush:"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PreViewAndConfig"]
+layout_mode = 2
+offset_left = 164.5
+offset_top = 99.0
+offset_right = 464.5
+offset_bottom = 130.0
+
+[node name="RangeLabel" type="Label" parent="PreViewAndConfig/HBoxContainer"]
+layout_mode = 2
+text = "Range:"
+
+[node name="Range" type="SpinBox" parent="PreViewAndConfig/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+step = 0.1
+value = 0.1
+
+[node name="DensityLabel" type="Label" parent="PreViewAndConfig/HBoxContainer"]
+layout_mode = 2
+text = "Density:"
+
+[node name="Density" type="SpinBox" parent="PreViewAndConfig/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+value = 1.0
+
+[node name="HSeparator3" type="HSeparator" parent="PreViewAndConfig"]
+layout_mode = 2
+offset_left = 164.5
+offset_top = 134.0
+offset_right = 464.5
+offset_bottom = 138.0
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="PreViewAndConfig"]
+layout_mode = 2
+offset_left = 164.5
+offset_top = 142.0
+offset_right = 464.5
+offset_bottom = 166.0
+
+[node name="VSeparator" type="VSeparator" parent="PreViewAndConfig"]
+layout_mode = 2
+offset_left = 468.5
+offset_top = 2.0
+offset_right = 472.5
+offset_bottom = 166.0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="PreViewAndConfig"]
+layout_mode = 2
+offset_left = 476.5
+offset_top = 2.0
+offset_right = 652.5
+offset_bottom = 166.0
+
+[node name="RandomRotationEnabler" type="CheckBox" parent="PreViewAndConfig/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Random rotation"
+
+[node name="HSeparator2" type="HSeparator" parent="PreViewAndConfig/VBoxContainer2"]
+layout_mode = 2
+
+[node name="RandomScaleEnabler" type="CheckBox" parent="PreViewAndConfig/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Random scale"
+
+[node name="HSeparator" type="HSeparator" parent="PreViewAndConfig/VBoxContainer2"]
+layout_mode = 2
+
+[node name="RandomRangeLabel" type="Label" parent="PreViewAndConfig/VBoxContainer2"]
+layout_mode = 2
+text = "Random scale range:"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PreViewAndConfig/VBoxContainer2"]
+layout_mode = 2
+
+[node name="RandomScaleRangeMin" type="SpinBox" parent="PreViewAndConfig/VBoxContainer2/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+step = 0.1
+value = 1.0
+editable = false
+prefix = "Min"
+
+[node name="RandomScaleRangeMax" type="SpinBox" parent="PreViewAndConfig/VBoxContainer2/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+step = 0.1
+value = 1.0
+editable = false
+prefix = "Max"
+
+[connection signal="toggled" from="VBoxContainer/EnableButton" to="." method="_on_enable_button_toggled"]
+[connection signal="toggled" from="PreViewAndConfig/VBoxContainer2/RandomRotationEnabler" to="." method="_on_random_rotation_enabler_toggled"]
+[connection signal="toggled" from="PreViewAndConfig/VBoxContainer2/RandomScaleEnabler" to="." method="_on_random_scale_enabler_toggled"]
