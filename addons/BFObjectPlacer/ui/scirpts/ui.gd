@@ -14,7 +14,7 @@ extends HBoxContainer
 @onready var randomRotationEnabler : CheckBox = %RandomRotationEnabler
 @onready var tree : Tree = %Tree # Tree node path.
 
-@onready var pre_view: Node3D = $PreViewAndConfig/PreViewContainer/PreView/PreView
+@onready var pre_view : Node3D = $PreViewAndConfig/PreViewContainer/PreView/PreView
 
 var can_rotate : bool = false
 var can_scale : bool = false
@@ -65,7 +65,7 @@ func add_items_to_tree(path: String, parent: TreeItem) -> void:
 # Update the tree node and enable the placement.
 func _on_enable_button_toggled(toggled_on: bool) -> void:
 	enabled = toggled_on # Enable the placement.
-	var edited_scene = EditorInterface.get_edited_scene_root() # Get the root scene.
+	var edited_scene : Node = EditorInterface.get_edited_scene_root() # Get the root scene.
 	if enabled:
 		tree.clear() # Clear the tree wen enable is true
 
@@ -83,6 +83,8 @@ func _on_enable_button_toggled(toggled_on: bool) -> void:
 func _process(delta: float) -> void:
 	if enabled and GIZMO and collision(): # If the placement is enabled and the mouse is on a collision object, put the gizmo on mouse pos.
 		GIZMO.position = collision().get("position") + Vector3(OffsetX.value, OffsetY.value, OffsetZ.value)
+		if placementrange.value > 0.1:
+			GIZMO.scale = Vector3(placementrange.value, placementrange.value, placementrange.value)
 
 # Get the ssmp (Screen Space Mouse Position).
 func collision() -> Dictionary:
@@ -124,18 +126,18 @@ func _input(event):
 
 # If the mouse position is on a object, make the placement logic.
 		if collision():
-			var center_pos = collision().get("position")
-			var edited_scene = EditorInterface.get_edited_scene_root()
+			var center_pos : Vector3 = collision().get("position")
+			var edited_scene : Node = EditorInterface.get_edited_scene_root()
 			if not edited_scene:
 				return
 			# Undo redo
 
-			var undo_redo = EditorInterface.get_editor_undo_redo()
+			var undo_redo : EditorUndoRedoManager = EditorInterface.get_editor_undo_redo()
 			undo_redo.create_action("Place Objects")
 
 			for i in range(placementdensity.value): # Placement Density
-				var obj = load(object_path).instantiate()
-				var random_offset = Vector3(
+				var obj : Node = load(object_path).instantiate()
+				var random_offset : Vector3 = Vector3(
 					randf_range(0, placementrange.value), # Placement Range
 					0,
 					randf_range(0, placementrange.value)
@@ -157,9 +159,9 @@ func _input(event):
 
 # Update the obect_path with the item selected.
 func _on_item_selected() -> void:
-	var selected = tree.get_selected()
+	var selected : TreeItem = tree.get_selected()
 	if selected:
-		var path = selected.get_metadata(0)
+		var path := selected.get_metadata(0)
 		object_path = path
 
 		if GIZMO:
@@ -167,7 +169,7 @@ func _on_item_selected() -> void:
 			GIZMO = null
 
 		if object_path and ResourceLoader.exists(object_path):
-			var new_scene = load(object_path)
+			var new_scene : PackedScene = load(object_path)
 			if new_scene is PackedScene:
 
 				for i in pre_view.get_node("Holder").get_children():
@@ -175,11 +177,14 @@ func _on_item_selected() -> void:
 
 				pre_view.get_node("Holder").add_child(new_scene.instantiate())
 
-				GIZMO = new_scene.instantiate()
+				if not placementrange.value > 0.1:
+					GIZMO = new_scene.instantiate()
+				else:
+					GIZMO = gizmo_scene.instantiate()
 
 				_disable_collision(GIZMO)
 
-				var edited_scene = EditorInterface.get_edited_scene_root()
+				var edited_scene : Node = EditorInterface.get_edited_scene_root()
 				if edited_scene:
 					edited_scene.add_child(GIZMO)
 					GIZMO.owner = null
@@ -191,9 +196,11 @@ func _disable_collision(node: Node) -> void:
 
 	# CSGs
 	if node is CSGShape3D:
-		node.use_collision = false #FIXME -> this is not working for csg.
+		node.use_collision = false
 
 	for child in node.get_children():
+		if child is CSGShape3D:
+			child.use_collision = false
 		_disable_collision(child)
 
 func _on_random_rotation_enabler_toggled(toggled_on: bool) -> void:

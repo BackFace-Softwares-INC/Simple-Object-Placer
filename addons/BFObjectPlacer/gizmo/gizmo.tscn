@@ -8,8 +8,6 @@ refraction_scale = 1.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_dvubd"]
 material = SubResource("StandardMaterial3D_rnc2j")
-radius = 2.5
-height = 5.0
 
 [node name="Gizmo" type="MeshInstance3D"]
 mesh = SubResource("SphereMesh_dvubd")
