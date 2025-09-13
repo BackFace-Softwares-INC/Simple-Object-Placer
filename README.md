@@ -6,7 +6,7 @@ This addon was developed for internal use and for specific needs, it may lack fu
 ##
 A simple Godot addon to place 3D objects/nodes on a 3D scene at mouse position using raycast.
 
-<img src="SS2.png">
+<img src="Screenshot">
 
 # How to use:
 Clone this repo pasting this command on terminal:
