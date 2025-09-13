@@ -8,16 +8,16 @@ extends HBoxContainer
 @onready var OffsetZ : SpinBox = %Z # Z Axis position for the offset.
 @onready var placementdensity : SpinBox = %Density # Density of objects.
 @onready var placementrange : SpinBox = %Range # Range distance of the objects.
-@onready var scaleRangeMin : SpinBox = %RandomScaleRangeMin
-@onready var scaleRangeMax : SpinBox = %RandomScaleRangeMax
-@onready var randomScaleEnabler : CheckBox = %RandomScaleEnabler
-@onready var randomRotationEnabler : CheckBox = %RandomRotationEnabler
+@onready var scaleRangeMin : SpinBox = %RandomScaleRangeMin # Random scale min value spin box.
+@onready var scaleRangeMax : SpinBox = %RandomScaleRangeMax # Random scale max value spin box.
+@onready var randomScaleEnabler : CheckBox = %RandomScaleEnabler # Random scale enable check box.
+@onready var randomRotationEnabler : CheckBox = %RandomRotationEnabler # Random rotation enable check box.
 @onready var tree : Tree = %Tree # Tree node path.
 
-@onready var pre_view : Node3D = $PreViewAndConfig/PreViewContainer/PreView/PreView
+@onready var pre_view : Node3D = $PreViewAndConfig/PreViewContainer/PreView/PreView # Preview 3D scene.
 
-var can_rotate : bool = false
-var can_scale : bool = false
+var can_rotate : bool = false # Define the current status of the random rotation.
+var can_scale : bool = false # Define the current status of the random scale.
 
 # Scene path on the filesystem.
 var object_path # The path of the object that will be placed.
@@ -66,6 +66,12 @@ func add_items_to_tree(path: String, parent: TreeItem) -> void:
 func _on_enable_button_toggled(toggled_on: bool) -> void:
 	enabled = toggled_on # Enable the placement.
 	var edited_scene : Node = EditorInterface.get_edited_scene_root() # Get the root scene.
+	var objects_container : Node3D
+	if not edited_scene.has_node("ObjectsContainer"):
+		objects_container = Node3D.new()
+		edited_scene.add_child(objects_container)
+		objects_container.set_owner(edited_scene)
+		objects_container.name = "ObjectsContainer"
 	if enabled:
 		tree.clear() # Clear the tree wen enable is true
 
@@ -113,7 +119,7 @@ func _input(event):
 
 	if event is InputEventMouseButton and event.pressed: # Verify if the mouse button was pressed and if the mouse is on the viewport.
 		var vp_rect = EditorInterface.get_editor_viewport_3d().get_visible_rect() # Get the viewport.
-		var mouse_pos = event.position
+		var mouse_pos : Vector2 = event.position
 
 		if not vp_rect.has_point(mouse_pos): # Return if the click position was off the viewport.
 			return
@@ -151,9 +157,9 @@ func _input(event):
 					obj.scale = Vector3(random_scale, random_scale, random_scale)
 				else:
 					obj.position = center_pos + random_offset + Vector3(OffsetX.value, OffsetY.value, OffsetZ.value)
-				undo_redo.add_do_method(edited_scene, "add_child", obj)
-				undo_redo.add_do_method(obj, "set_owner", edited_scene)
-				undo_redo.add_undo_method(edited_scene, "remove_child", obj)
+				undo_redo.add_do_method(edited_scene.get_node("ObjectsContainer"), "add_child", obj)
+				undo_redo.add_do_method(obj, "set_owner", edited_scene.get_node("ObjectsContainer"))
+				undo_redo.add_undo_method(edited_scene.get_node("ObjectsContainer"), "remove_child", obj)
 
 			undo_redo.commit_action()
 
@@ -161,7 +167,7 @@ func _input(event):
 func _on_item_selected() -> void:
 	var selected : TreeItem = tree.get_selected()
 	if selected:
-		var path := selected.get_metadata(0)
+		var path : String = selected.get_metadata(0)
 		object_path = path
 
 		if GIZMO:

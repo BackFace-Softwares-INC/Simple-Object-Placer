@@ -1,8 +1,8 @@
 @tool
 extends EditorPlugin
 
-var ui
-const UI = preload("res://addons/BFObjectPlacer/ui/ui.tscn")
+var ui : HBoxContainer
+const UI : PackedScene = preload("res://addons/BFObjectPlacer/ui/ui.tscn")
 
 func _enter_tree() -> void:
 	ui = UI.instantiate()
