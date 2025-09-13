@@ -6,7 +6,8 @@ This addon was developed for internal use and for specific needs, it may lack fu
 ##
 A simple Godot addon to place 3D objects/nodes on a 3D scene at mouse position using raycast.
 
-<img src="Screenshot">
+<img src="Screenshot.png">
+Stylized Tree by yonimantz on Sketchfab
 
 # How to use:
 Clone this repo pasting this command on terminal:
