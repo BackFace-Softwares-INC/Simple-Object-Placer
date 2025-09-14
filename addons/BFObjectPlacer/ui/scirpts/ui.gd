@@ -66,12 +66,6 @@ func add_items_to_tree(path: String, parent: TreeItem) -> void:
 func _on_enable_button_toggled(toggled_on: bool) -> void:
 	enabled = toggled_on # Enable the placement.
 	var edited_scene : Node = EditorInterface.get_edited_scene_root() # Get the root scene.
-	var objects_container : Node3D
-	if not edited_scene.has_node("ObjectsContainer"):
-		objects_container = Node3D.new()
-		edited_scene.add_child(objects_container)
-		objects_container.set_owner(edited_scene)
-		objects_container.name = "ObjectsContainer"
 	if enabled:
 		tree.clear() # Clear the tree wen enable is true
 
@@ -158,9 +152,9 @@ func _input(event):
 					obj.scale = Vector3(random_scale, random_scale, random_scale)
 				else:
 					obj.position = center_pos + random_offset + Vector3(OffsetX.value, OffsetY.value, OffsetZ.value)
-				undo_redo.add_do_method(edited_scene.get_node("ObjectsContainer"), "add_child", obj)
-				undo_redo.add_do_method(obj, "set_owner", edited_scene.get_node("ObjectsContainer"))
-				undo_redo.add_undo_method(edited_scene.get_node("ObjectsContainer"), "remove_child", obj)
+				undo_redo.add_do_method(edited_scene, "add_child", obj)
+				undo_redo.add_do_method(obj, "set_owner", edited_scene)
+				undo_redo.add_undo_method(edited_scene, "remove_child", obj)
 
 			undo_redo.commit_action()
 
