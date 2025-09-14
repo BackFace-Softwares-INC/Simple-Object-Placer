@@ -132,6 +132,7 @@ func _input(event):
 
 # If the mouse position is on a object, make the placement logic.
 		if collision():
+			randomize()
 			var center_pos : Vector3 = collision().get("position")
 			var edited_scene : Node = EditorInterface.get_edited_scene_root()
 			if not edited_scene:
@@ -151,7 +152,7 @@ func _input(event):
 				var random_scale : float = randf_range(scaleRangeMin.value, scaleRangeMax.value)
 
 				if can_rotate:
-					obj.rotation.y = randf()
+					obj.rotation.y = randf_range(0.0, 360.0)
 				if can_scale:
 					obj.position = center_pos + random_offset + (Vector3(OffsetX.value, OffsetY.value, OffsetZ.value) * random_scale)
 					obj.scale = Vector3(random_scale, random_scale, random_scale)
