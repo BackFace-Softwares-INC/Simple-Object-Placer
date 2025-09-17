@@ -3,15 +3,15 @@ extends HBoxContainer
 
 # Global variables.
 @onready var enabled : bool = false # Store the current status of the object placer.
-@onready var OffsetX : SpinBox = %X # X Axis position for the offset.
-@onready var OffsetY : SpinBox = %Y # Y Axis position for the offset.
-@onready var OffsetZ : SpinBox = %Z # Z Axis position for the offset.
-@onready var placementdensity : SpinBox = %Density # Density of objects.
-@onready var placementrange : SpinBox = %Range # Range distance of the objects.
-@onready var scaleRangeMin : SpinBox = %RandomScaleRangeMin # Random scale min value spin box.
-@onready var scaleRangeMax : SpinBox = %RandomScaleRangeMax # Random scale max value spin box.
-@onready var randomScaleEnabler : CheckBox = %RandomScaleEnabler # Random scale enable check box.
-@onready var randomRotationEnabler : CheckBox = %RandomRotationEnabler # Random rotation enable check box.
+@onready var offset_x : SpinBox = %X # X Axis position for the offset.
+@onready var offset_y : SpinBox = %Y # Y Axis position for the offset.
+@onready var offset_z : SpinBox = %Z # Z Axis position for the offset.
+@onready var placement_density : SpinBox = %Density # Density of objects.
+@onready var placement_range : SpinBox = %Range # Range distance of the objects.
+@onready var scale_range_min : SpinBox = %RandomScaleRangeMin # Random scale min value spin box.
+@onready var scale_range_max : SpinBox = %RandomScaleRangeMax # Random scale max value spin box.
+@onready var random_scale_enabler : CheckBox = %RandomScaleEnabler # Random scale enable check box.
+@onready var random_rotation_enabler : CheckBox = %RandomRotationEnabler # Random rotation enable check box.
 @onready var tree : Tree = %Tree # Tree node path.
 
 @onready var pre_view : Node3D = $PreViewAndConfig/PreViewContainer/PreView/PreView # Preview 3D scene.
@@ -82,9 +82,9 @@ func _on_enable_button_toggled(toggled_on: bool) -> void:
 # Put the gizmo on the mouse position
 func _process(delta: float) -> void:
 	if enabled and GIZMO and collision(): # If the placement is enabled and the mouse is on a collision object, put the gizmo on mouse pos.
-		GIZMO.position = collision().get("position") + Vector3(OffsetX.value, OffsetY.value, OffsetZ.value)
-		if placementrange.value > 0.1:
-			GIZMO.scale = Vector3(placementrange.value, placementrange.value, placementrange.value)
+		GIZMO.position = collision().get("position") + Vector3(offset_x.value, offset_y.value, offset_z.value)
+		if placement_range.value > 0.1:
+			GIZMO.scale = Vector3(placement_range.value, placement_range.value, placement_range.value)
 
 # Get the ssmp (Screen Space Mouse Position).
 func collision() -> Dictionary:
@@ -136,22 +136,22 @@ func _input(event):
 			var undo_redo : EditorUndoRedoManager = EditorInterface.get_editor_undo_redo()
 			undo_redo.create_action("Place Objects")
 
-			for i in range(placementdensity.value): # Placement Density
+			for i in range(placement_density.value): # Placement Density
 				var obj : Node = load(object_path).instantiate()
 				var random_offset : Vector3 = Vector3(
-					randf_range(0, placementrange.value), # Placement Range
+					randf_range(0, placement_range.value), # Placement Range
 					0,
-					randf_range(0, placementrange.value)
+					randf_range(0, placement_range.value)
 				)
-				var random_scale : float = randf_range(scaleRangeMin.value, scaleRangeMax.value)
+				var random_scale : float = randf_range(scale_range_min.value, scale_range_max.value)
 
 				if can_rotate:
 					obj.rotation.y = randf_range(0.0, 360.0)
 				if can_scale:
-					obj.position = center_pos + random_offset + (Vector3(OffsetX.value, OffsetY.value, OffsetZ.value) * random_scale)
+					obj.position = center_pos + random_offset + (Vector3(offset_x.value, offset_y.value, offset_z.value) * random_scale)
 					obj.scale = Vector3(random_scale, random_scale, random_scale)
 				else:
-					obj.position = center_pos + random_offset + Vector3(OffsetX.value, OffsetY.value, OffsetZ.value)
+					obj.position = center_pos + random_offset + Vector3(offset_x.value, offset_y.value, offset_z.value)
 				undo_redo.add_do_method(edited_scene, "add_child", obj)
 				undo_redo.add_do_method(obj, "set_owner", edited_scene)
 				undo_redo.add_undo_method(edited_scene, "remove_child", obj)
@@ -178,7 +178,7 @@ func _on_item_selected() -> void:
 
 				pre_view.get_node("Holder").add_child(new_scene.instantiate())
 
-				if not placementrange.value > 0.1:
+				if not placement_range.value > 0.1:
 					GIZMO = new_scene.instantiate()
 				else:
 					GIZMO = gizmo_scene.instantiate()
@@ -209,5 +209,5 @@ func _on_random_rotation_enabler_toggled(toggled_on: bool) -> void:
 
 func _on_random_scale_enabler_toggled(toggled_on: bool) -> void:
 	can_scale = toggled_on
-	scaleRangeMax.editable = toggled_on
-	scaleRangeMin.editable = toggled_on
+	scale_range_max.editable = toggled_on
+	scale_range_min.editable = toggled_on
