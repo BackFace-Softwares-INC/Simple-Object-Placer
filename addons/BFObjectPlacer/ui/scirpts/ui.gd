@@ -1,7 +1,7 @@
 @tool
 extends HBoxContainer
 
-# Global variables.
+#region Global variables
 @onready var enabled : bool = false # Store the current status of the object placer.
 @onready var offset_x : SpinBox = %X # X Axis position for the offset.
 @onready var offset_y : SpinBox = %Y # Y Axis position for the offset.
@@ -25,6 +25,10 @@ var object_path # The path of the object that will be placed.
 # 3D gizmo scene path.
 var GIZMO : Node3D = null # Variable to store the 3D scene of the gizmo
 var gizmo_scene : PackedScene = preload("res://addons/BFObjectPlacer/gizmo/gizmo.tscn") # 3D scene path.
+
+#endregion
+
+#region File tree and gizmo/enable the placement
 
 # Define tree nodes attributes, like hide root, names and others.
 func _ready() -> void:
@@ -79,6 +83,10 @@ func _on_enable_button_toggled(toggled_on: bool) -> void:
 			GIZMO.queue_free()
 			GIZMO = null
 
+#endregion
+
+#region Gizmo on mouse position and the collision function
+
 # Put the gizmo on the mouse position
 func _process(delta: float) -> void:
 	if enabled and GIZMO and collision(): # If the placement is enabled and the mouse is on a collision object, put the gizmo on mouse pos.
@@ -106,7 +114,9 @@ func collision() -> Dictionary:
 		return collision
 	return collision
 
-# 3D placement logic.
+#endregion
+
+#region 3D placement logic
 func _input(event):
 	if not enabled:
 		return
@@ -211,3 +221,5 @@ func _on_random_scale_enabler_toggled(toggled_on: bool) -> void:
 	can_scale = toggled_on
 	scale_range_max.editable = toggled_on
 	scale_range_min.editable = toggled_on
+
+#endregion
