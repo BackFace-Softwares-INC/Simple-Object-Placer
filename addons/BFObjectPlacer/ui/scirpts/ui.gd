@@ -77,7 +77,8 @@ func _on_enable_button_toggled(toggled_on: bool) -> void:
 		add_items_to_tree("res://", root)
 		if not GIZMO: # Gizmo stantiate and logic.
 			GIZMO = gizmo_scene.instantiate()
-		edited_scene.add_child(GIZMO)
+		if edited_scene:
+			edited_scene.add_child(GIZMO)
 	else:
 		if GIZMO:
 			GIZMO.queue_free()
