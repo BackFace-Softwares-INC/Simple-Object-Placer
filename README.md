@@ -28,8 +28,8 @@ After enabling the plugin, a new tab named "Object Placer" should appear in the 
 There are four version positions (Example: V1.0.0.0). The first value is a release version, the second is a pre-release, the third is a beta version, and the fourth and last is an alpha version.
 How does it work? It's simple; take a look at this example:
 
-### The code uses snake_case.
-
 v1.3.0.4 -> is a release version with three pre-release versions, meaning it's almost at its second release, and four features are in alpha.
+
+### The code uses snake_case.
 
 feel free to contribute to the project ❤
